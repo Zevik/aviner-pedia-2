@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { BookOpen, ArrowLeft } from 'lucide-react';
 import { FilterSidebar } from '@/components/FilterSidebar';

@@ -10,6 +10,8 @@ import {
   getLatestQA,
 } from '@/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export default async function HomePage() {
   // Fetch data for all sections
   const [featuredArticle, latestVideos, seriesGroups, latestQA] = await Promise.all([

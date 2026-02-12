@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { Search as SearchIcon } from 'lucide-react';
 import { VideoCard } from '@/components/VideoCard';

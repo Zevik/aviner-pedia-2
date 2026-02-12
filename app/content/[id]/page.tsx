@@ -1,4 +1,5 @@
 import { notFound } from 'next/navigation';
+export const dynamic = 'force-dynamic';
 import { Calendar, Tag } from 'lucide-react';
 import { getContentItemById } from '@/lib/db';
 import { ContentRenderer } from '@/components/ContentRenderer';

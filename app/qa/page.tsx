@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+export const dynamic = 'force-dynamic';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { QAListItem } from '@/components/QAListItem';
 import { getContentItems, getSubCategories } from '@/lib/db';

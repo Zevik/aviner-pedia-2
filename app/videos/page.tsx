@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+export const dynamic = 'force-dynamic';
 import { FilterSidebar } from '@/components/FilterSidebar';
 import { VideoCard } from '@/components/VideoCard';
 import { getContentItems, getSubCategories } from '@/lib/db';
