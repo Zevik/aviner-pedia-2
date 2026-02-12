@@ -7,6 +7,23 @@ interface ContentRendererProps {
 }
 
 export function ContentRenderer({ content, className = '' }: ContentRendererProps) {
+  // Clean and fix markdown syntax issues from source data
+  const cleanedContent = content
+    // Stage 1: Fix patterns with trailing punctuation: * text*' -> **text**
+    .replace(/\* ([^*\n]+)\*['|"]/g, '**$1**')
+    // Stage 2: Fix * *text:** -> **text:**
+    .replace(/\* \*([^*]+):\*\*/g, '**$1:**')
+    // Stage 3: Fix * *text** (at end or before space/newline) -> **text**
+    .replace(/\* \*([^*]+)\*\*(?=\s|$)/g, '**$1**')
+    // Stage 4: Fix * text:* -> **text:**
+    .replace(/\* ([^*\n]+):\*/g, '**$1:**')
+    // Stage 5: Fix * text* (standalone) -> **text**
+    .replace(/\* ([^*\n]+)\*(?=\s|$)/g, '**$1**')
+    // Stage 6: Remove standalone * * lines
+    .replace(/^\* \*\s*$/gm, '')
+    // Stage 7: Remove orphaned asterisks
+    .replace(/^\*\s*\n/gm, '\n');
+
   return (
     <div className={`prose prose-lg max-w-none ${className}`}>
       <ReactMarkdown
@@ -41,9 +58,17 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
           a: ({ node, ...props }) => (
             <a className="text-primary hover:underline" {...props} />
           ),
+          // Customize bold/strong text
+          strong: ({ node, ...props }) => (
+            <strong className="font-bold text-gray-900" {...props} />
+          ),
+          // Customize italic/emphasis text
+          em: ({ node, ...props }) => (
+            <em className="italic text-gray-800" {...props} />
+          ),
         }}
       >
-        {content}
+        {cleanedContent}
       </ReactMarkdown>
     </div>
   );
