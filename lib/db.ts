@@ -22,6 +22,11 @@ export async function getContentItems(filters?: ContentFilters): Promise<Content
     query = query.or(`title.ilike.%${filters.search}%,content_md.ilike.%${filters.search}%`);
   }
 
+  // Filter out items without content (except for videos which may rely on video_id)
+  if (filters?.main_category !== 'סרטונים') {
+    query = query.not('content_md', 'is', null).neq('content_md', '');
+  }
+
   if (filters?.limit) {
     query = query.limit(filters.limit);
   }
@@ -66,6 +71,8 @@ export async function getLatestArticle(): Promise<ContentItem | null> {
     .from('content_items')
     .select('*')
     .eq('main_category', 'מאמרים')
+    .not('content_md', 'is', null)
+    .neq('content_md', '')
     .order('created_at', { ascending: false })
     .limit(1)
     .single();
@@ -97,6 +104,8 @@ export async function getSeriesGroups(limit: number = 8) {
     .select('sub_category, title')
     .eq('main_category', 'סדרות')
     .not('sub_category', 'is', null)
+    .not('content_md', 'is', null)
+    .neq('content_md', '')
     .order('created_at', { ascending: false })
     .limit(100);
 
@@ -164,6 +173,8 @@ export async function searchContent(query: string, limit: number = 20): Promise<
       type: 'websearch',
       config: 'simple',
     })
+    .not('content_md', 'is', null)
+    .neq('content_md', '')
     .limit(limit);
 
   if (error) {
