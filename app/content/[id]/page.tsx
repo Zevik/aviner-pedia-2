@@ -22,15 +22,18 @@ export default async function ContentPage({ params }: ContentPageProps) {
       return <VideoContent item={item} />;
     }
 
-    // Otherwise, choose layout by category
-    switch (item.main_category) {
-      case 'שו"ת הלכה':
-        return <QAContent item={item} />;
-      case 'מאמרים':
-      case 'סדרות':
-      default:
-        return <ArticleContent item={item} />;
+    // Check if article content looks like Q&A (starts with ש: or שאלה:)
+    const isQAFormat = item.content_md &&
+      (item.content_md.trim().match(/^(ש:|שאלה:)/m) ||
+       item.content_md.match(/^\s*(ש:|שאלה:)/));
+
+    // Choose layout by category or content format
+    if (item.main_category === 'שו"ת הלכה' || isQAFormat) {
+      return <QAContent item={item} />;
     }
+
+    // Default to article layout
+    return <ArticleContent item={item} />;
   };
 
   return (
@@ -114,6 +117,49 @@ function VideoContent({ item }: { item: any }) {
 
 // Q&A Content Layout (Chat style)
 function QAContent({ item }: { item: any }) {
+  // Check if content already contains Q&A format (ש: ת:)
+  const hasInlineQA = item.content_md &&
+    (item.content_md.match(/^(ש:|שאלה:)/m) ||
+     item.content_md.match(/^\s*(ש:|שאלה:)/));
+
+  // If content has inline Q&A, render as article with Q&A styling
+  if (hasInlineQA) {
+    return (
+      <div className="container mx-auto px-4 max-w-4xl">
+        <div className="bg-white rounded-lg shadow-lg p-8">
+          {/* Title */}
+          <h1 className="text-3xl md:text-4xl font-bold mb-6 text-center">
+            {item.title}
+          </h1>
+
+          {/* Metadata */}
+          <div className="mb-8 pb-6 border-b flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
+            {item.publish_date && (
+              <div className="flex items-center space-x-2 space-x-reverse">
+                <Calendar className="w-4 h-4" />
+                <span>{new Date(item.publish_date).toLocaleDateString('he-IL')}</span>
+              </div>
+            )}
+            {item.sub_category && (
+              <div className="flex items-center space-x-2 space-x-reverse">
+                <Tag className="w-4 h-4" />
+                <span>{item.sub_category}</span>
+              </div>
+            )}
+          </div>
+
+          {/* Content with Q&A formatting */}
+          {item.content_md && (
+            <div className="prose prose-lg max-w-none">
+              <ContentRenderer content={item.content_md} />
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Traditional Q&A layout: title as question, content as answer
   return (
     <div className="container mx-auto px-4 max-w-4xl">
       <div className="bg-white rounded-lg shadow-lg p-8">

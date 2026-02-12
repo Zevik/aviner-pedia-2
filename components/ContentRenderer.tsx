@@ -1,5 +1,6 @@
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import rehypeRaw from 'rehype-raw';
 
 interface ContentRendererProps {
   content: string;
@@ -7,8 +8,22 @@ interface ContentRendererProps {
 }
 
 export function ContentRenderer({ content, className = '' }: ContentRendererProps) {
+  // Extract YouTube video IDs from <youtube> tags
+  const youtubeMatches = content.match(/<youtube>([^<]+)<\/youtube>/g);
+  const youtubeIds = youtubeMatches?.map(match => {
+    const id = match.replace(/<\/?youtube>/g, '').trim();
+    return id;
+  }) || [];
+
   // Clean and fix markdown syntax issues from source data
-  const cleanedContent = content
+  let cleanedContent = content
+    // Remove <youtube> tags - we'll render them separately
+    .replace(/<youtube>[^<]+<\/youtube>/g, '')
+    // Convert Q&A format to styled markdown
+    // ש: text -> <div class="qa-question">**ש:** text</div>
+    .replace(/^(ש:|שאלה:)\s*(.+)$/gm, '<div class="qa-question">**$1** $2</div>')
+    // ת: text -> <div class="qa-answer">**ת:** text</div>
+    .replace(/^(ת:|תשובה:)\s*(.+)$/gm, '<div class="qa-answer">**$1** $2</div>')
     // Stage 1: Fix patterns with trailing punctuation: * text*' -> **text**
     .replace(/\* ([^*\n]+)\*['|"]/g, '**$1**')
     // Stage 2: Fix * *text:** -> **text:**
@@ -26,8 +41,26 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
 
   return (
     <div className={`prose prose-lg max-w-none ${className}`}>
+      {/* Render YouTube videos if found */}
+      {youtubeIds.length > 0 && (
+        <div className="space-y-6 mb-8">
+          {youtubeIds.map((videoId, index) => (
+            <div key={index} className="relative w-full rounded-lg overflow-hidden shadow-lg" style={{ paddingBottom: '56.25%' }}>
+              <iframe
+                className="absolute top-0 left-0 w-full h-full"
+                src={`https://www.youtube.com/embed/${videoId}`}
+                title={`YouTube video ${index + 1}`}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ))}
+        </div>
+      )}
+
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
+        rehypePlugins={[rehypeRaw]}
         components={{
           // Customize heading styles
           h1: ({ node, ...props }) => (
