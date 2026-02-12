@@ -17,17 +17,17 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: '.env.local' });
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
+if (!supabaseUrl || !supabaseServiceKey) {
   console.error('❌ Missing Supabase environment variables!');
   console.error('Please create a .env.local file with:');
   console.error('  NEXT_PUBLIC_SUPABASE_URL=your-url');
-  console.error('  NEXT_PUBLIC_SUPABASE_ANON_KEY=your-key');
+  console.error('  SUPABASE_SERVICE_ROLE_KEY=your-service-role-key');
   process.exit(1);
 }
 
-const supabase = createClient(supabaseUrl, supabaseAnonKey);
+const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
 interface CSVRow {
   'מזהה': string;

@@ -17,9 +17,13 @@ export default async function ContentPage({ params }: ContentPageProps) {
   }
 
   const renderByCategory = () => {
+    // If item has video_id, show video layout (for videos and video-based series)
+    if (item.video_id && item.video_id.trim().length > 0) {
+      return <VideoContent item={item} />;
+    }
+
+    // Otherwise, choose layout by category
     switch (item.main_category) {
-      case 'סרטונים':
-        return <VideoContent item={item} />;
       case 'שו"ת הלכה':
         return <QAContent item={item} />;
       case 'מאמרים':
