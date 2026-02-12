@@ -1,0 +1,74 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+    --card: 0 0% 100%;
+    --card-foreground: 222.2 84% 4.9%;
+    --primary: 222.2 47.4% 11.2%;
+    --primary-foreground: 210 40% 98%;
+    --secondary: 210 40% 96.1%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 210 40% 96.1%;
+    --accent-foreground: 222.2 47.4% 11.2%;
+    --border: 214.3 31.8% 91.4%;
+    --radius: 0.5rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
+  }
+}
+
+/* RTL Support */
+[dir="rtl"] {
+  text-align: right;
+}
+
+/* Prose RTL adjustments for markdown content */
+[dir="rtl"] .prose {
+  text-align: right;
+}
+
+[dir="rtl"] .prose ul,
+[dir="rtl"] .prose ol {
+  padding-right: 1.625em;
+  padding-left: 0;
+}
+
+[dir="rtl"] .prose blockquote {
+  border-left: none;
+  border-right: 0.25rem solid #e5e7eb;
+  padding-right: 1em;
+  padding-left: 0;
+}
+
+/* Custom scrollbar for horizontal scroll sections */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Video thumbnail hover effect */
+.video-card {
+  transition: transform 0.2s ease-in-out;
+}
+
+.video-card:hover {
+  transform: scale(1.05);
+}
