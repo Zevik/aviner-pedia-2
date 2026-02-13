@@ -19,6 +19,8 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
   let cleanedContent = content
     // Remove <youtube> tags - we'll render them separately
     .replace(/<youtube>[^<]+<\/youtube>/g, '')
+    // Remove footer text from video content
+    .replace(/• למאגר מלא ומסודר.*?https:\/\/twitter\.com\/RavAviner__/gs, '')
     // Stage 1: Fix patterns with trailing punctuation: * text*' -> **text**
     .replace(/\* ([^*\n]+)\*['|"]/g, '**$1**')
     // Stage 2: Fix * *text:** -> **text:**
@@ -34,9 +36,9 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
     // Stage 7: Remove orphaned asterisks
     .replace(/^\*\s*\n/gm, '\n')
     // Stage 8: Convert Q&A format to styled divs (AFTER fixing asterisks)
-    // **שאלה:** text -> <div class="qa-question">**שאלה:** text</div>
+    // **שאלה:** text -> <div class="qa-question">**שאלה:** $1</div>
     .replace(/^\*\*שאלה:\*\*\s*(.+)$/gm, '<div class="qa-question">**שאלה:** $1</div>')
-    // **תשובה:** text -> <div class="qa-answer">**תשובה:** text</div>
+    // **תשובה:** text -> <div class="qa-answer">**תשובה:** $1</div>
     .replace(/^\*\*תשובה:\*\*\s*(.+)$/gm, '<div class="qa-answer">**תשובה:** $1</div>')
     // Support also ש: and ת: shortcuts
     .replace(/^ש:\s*(.+)$/gm, '<div class="qa-question">**ש:** $1</div>')

@@ -4,7 +4,6 @@ import { VideoCarousel } from '@/components/VideoCarousel';
 import { SeriesCard } from '@/components/SeriesCard';
 import { QAListItem } from '@/components/QAListItem';
 import {
-  getLatestArticle,
   getLatestVideos,
   getSeriesGroups,
   getLatestQA,
@@ -13,9 +12,8 @@ import {
 export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
-  // Fetch data for all sections
-  const [featuredArticle, latestVideos, seriesGroups, latestQA] = await Promise.all([
-    getLatestArticle(),
+  // Fetch data for all sections (removed featuredArticle)
+  const [latestVideos, seriesGroups, latestQA] = await Promise.all([
     getLatestVideos(12),
     getSeriesGroups(8),
     getLatestQA(10),
@@ -23,35 +21,63 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-background to-secondary/20">
-      {/* Hero Section - Featured Article */}
-      {featuredArticle && (
-        <section className="bg-gradient-to-l from-primary/5 to-primary/10 py-12">
-          <div className="container mx-auto px-4">
-            <div className="max-w-4xl mx-auto">
-              <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-                <div className="text-sm text-primary font-semibold mb-3">
-                  מאמר מומלץ
-                </div>
-                <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-                  {featuredArticle.title}
-                </h1>
-                {featuredArticle.summary && (
-                  <p className="text-xl text-muted-foreground mb-6 leading-relaxed">
-                    {featuredArticle.summary}
-                  </p>
-                )}
-                <Link
-                  href={`/content/${featuredArticle.id}`}
-                  className="inline-flex items-center space-x-2 space-x-reverse px-6 py-3 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors font-semibold"
-                >
-                  <span>קרא עוד</span>
-                  <ArrowLeft className="w-5 h-5" />
-                </Link>
+      {/* Site Header / Cover */}
+      <section className="bg-gradient-to-br from-primary/10 via-white to-primary/5 py-16">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto text-center">
+            {/* Logo/Icon */}
+            <div className="mb-6 flex justify-center">
+              <div className="w-24 h-24 bg-primary/10 rounded-full flex items-center justify-center shadow-lg">
+                <span className="text-5xl">📚</span>
               </div>
             </div>
+
+            {/* Main Title */}
+            <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-4 leading-tight">
+              אבינרפדיה
+            </h1>
+
+            {/* Subtitle */}
+            <p className="text-2xl md:text-3xl text-gray-700 mb-8 font-medium">
+              כל שיעורי הרב שלמה אבינר שליט"א
+            </p>
+
+            {/* Description */}
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-8">
+              מאגר מקיף של אלפי שיעורים, מאמרים ושו"ת הלכה מאת הרב שלמה אבינר
+            </p>
+
+            {/* Quick Links */}
+            <div className="flex flex-wrap gap-4 justify-center">
+              <Link
+                href="/videos"
+                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors shadow-md hover:shadow-lg font-semibold"
+              >
+                סרטונים
+              </Link>
+              <Link
+                href="/articles"
+                className="px-6 py-3 bg-white text-primary border-2 border-primary rounded-lg hover:bg-primary/5 transition-colors font-semibold"
+              >
+                מאמרים
+              </Link>
+              <Link
+                href="/qa"
+                className="px-6 py-3 bg-white text-primary border-2 border-primary rounded-lg hover:bg-primary/5 transition-colors font-semibold"
+              >
+                שו"ת הלכה
+              </Link>
+              <Link
+                href="/series"
+                className="px-6 py-3 bg-white text-primary border-2 border-primary rounded-lg hover:bg-primary/5 transition-colors font-semibold"
+              >
+                סדרות
+              </Link>
+            </div>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
+
 
       {/* Video Carousel Section */}
       {latestVideos.length > 0 && (
