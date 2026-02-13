@@ -110,6 +110,31 @@ export default async function HomePage() {
           </div>
         </section>
       )}
+
+      {/* French Content Banner */}
+      <section className="bg-gradient-to-l from-blue-50 to-blue-100 py-8">
+        <div className="container mx-auto px-4">
+          <Link
+            href="/french"
+            className="block max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+          >
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-4 space-x-reverse">
+                <span className="text-4xl">🇫🇷</span>
+                <div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                    Les cours en français
+                  </h3>
+                  <p className="text-gray-600">
+                    שיעורי הרב אבינר בצרפתית
+                  </p>
+                </div>
+              </div>
+              <ArrowLeft className="w-6 h-6 text-primary" />
+            </div>
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
