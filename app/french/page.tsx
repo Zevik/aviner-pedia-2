@@ -13,7 +13,7 @@ async function getFrenchContent() {
   const { data, error } = await supabase
     .from('content_items')
     .select('*')
-    .or('title.ilike.%français%,sub_category.ilike.%français%,sub_category.ilike.%Emouna%,sub_category.ilike.%Erets Israel%,sub_category.ilike.%Paracha%,sub_category.ilike.%couple%')
+    .or('title.ilike.%Emouna%,title.ilike.%Erets%,title.ilike.%Paracha%,title.ilike.%couple%,title.ilike.%famille%,title.ilike.%Mitsva%,title.ilike.%état%,sub_category.ilike.%Emouna%,sub_category.ilike.%Erets%,sub_category.ilike.%Paracha%,sub_category.ilike.%couple%,sub_category.ilike.%famille%')
     .order('title');
 
   if (error) {
@@ -27,16 +27,22 @@ async function getFrenchContent() {
 export default async function FrenchPage() {
   const items = await getFrenchContent();
 
-  // Group by sub_category
+  // Group by detecting French keywords in title (not sub_category, as French content is in titles)
   const grouped = items.reduce((acc, item) => {
-    const subCat = item.sub_category || 'Autres';
+    const title = item.title || '';
+    const subCat = item.sub_category || '';
 
-    // Match French categories
+    // Match French categories based on title content
     let category = 'Autres';
-    if (subCat.match(/Emouna|אמונה/i)) category = 'Emouna';
-    else if (subCat.match(/Erets Israel|ארץ ישראל/i)) category = 'Erets Israel';
-    else if (subCat.match(/Paracha|פרשת השבוע/i)) category = 'La Paracha de la semaine';
-    else if (subCat.match(/couple|famille|זוג|משפחה/i)) category = 'Le couple et la famille';
+    if (title.match(/Emouna/i) || subCat.match(/אמונה/i)) {
+      category = 'Emouna';
+    } else if (title.match(/Erets|Mitsva|état/i) || subCat.match(/ארץ ישראל/i)) {
+      category = 'Erets Israel';
+    } else if (title.match(/Paracha/i) || subCat.match(/פרשת השבוע/i)) {
+      category = 'La Paracha de la semaine';
+    } else if (title.match(/couple|famille/i) || subCat.match(/זוג|משפחה/i)) {
+      category = 'Le couple et la famille';
+    }
 
     if (!acc[category]) {
       acc[category] = [];
