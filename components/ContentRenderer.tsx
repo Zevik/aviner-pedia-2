@@ -19,11 +19,6 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
   let cleanedContent = content
     // Remove <youtube> tags - we'll render them separately
     .replace(/<youtube>[^<]+<\/youtube>/g, '')
-    // Convert Q&A format to styled markdown
-    // ש: text -> <div class="qa-question">**ש:** text</div>
-    .replace(/^(ש:|שאלה:)\s*(.+)$/gm, '<div class="qa-question">**$1** $2</div>')
-    // ת: text -> <div class="qa-answer">**ת:** text</div>
-    .replace(/^(ת:|תשובה:)\s*(.+)$/gm, '<div class="qa-answer">**$1** $2</div>')
     // Stage 1: Fix patterns with trailing punctuation: * text*' -> **text**
     .replace(/\* ([^*\n]+)\*['|"]/g, '**$1**')
     // Stage 2: Fix * *text:** -> **text:**
@@ -37,7 +32,15 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
     // Stage 6: Remove standalone * * lines
     .replace(/^\* \*\s*$/gm, '')
     // Stage 7: Remove orphaned asterisks
-    .replace(/^\*\s*\n/gm, '\n');
+    .replace(/^\*\s*\n/gm, '\n')
+    // Stage 8: Convert Q&A format to styled divs (AFTER fixing asterisks)
+    // **שאלה:** text -> <div class="qa-question">**שאלה:** text</div>
+    .replace(/^\*\*שאלה:\*\*\s*(.+)$/gm, '<div class="qa-question">**שאלה:** $1</div>')
+    // **תשובה:** text -> <div class="qa-answer">**תשובה:** text</div>
+    .replace(/^\*\*תשובה:\*\*\s*(.+)$/gm, '<div class="qa-answer">**תשובה:** $1</div>')
+    // Support also ש: and ת: shortcuts
+    .replace(/^ש:\s*(.+)$/gm, '<div class="qa-question">**ש:** $1</div>')
+    .replace(/^ת:\s*(.+)$/gm, '<div class="qa-answer">**ת:** $1</div>');
 
   return (
     <div className={`prose prose-lg max-w-none ${className}`}>
