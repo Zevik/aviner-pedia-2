@@ -35,14 +35,9 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
     .replace(/^\* \*\s*$/gm, '')
     // Stage 7: Remove orphaned asterisks
     .replace(/^\*\s*\n/gm, '\n')
-    // Stage 8: Convert Q&A format to styled divs (AFTER fixing asterisks)
-    // **שאלה:** text -> <div class="qa-question">**שאלה:** $1</div>
-    .replace(/^\*\*שאלה:\*\*\s*(.+)$/gm, '<div class="qa-question">**שאלה:** $1</div>')
-    // **תשובה:** text -> <div class="qa-answer">**תשובה:** $1</div>
-    .replace(/^\*\*תשובה:\*\*\s*(.+)$/gm, '<div class="qa-answer">**תשובה:** $1</div>')
-    // Support also ש: and ת: shortcuts
-    .replace(/^ש:\s*(.+)$/gm, '<div class="qa-question">**ש:** $1</div>')
-    .replace(/^ת:\s*(.+)$/gm, '<div class="qa-answer">**ת:** $1</div>');
+    // Stage 8: Remove ALL remaining asterisks (they are formatting marks, not content)
+    .replace(/\*\*/g, '')
+    .replace(/\*/g, '');
 
   return (
     <div className={`prose prose-lg max-w-none ${className}`}>
