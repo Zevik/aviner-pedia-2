@@ -35,9 +35,16 @@ export function ContentRenderer({ content, className = '' }: ContentRendererProp
     .replace(/^\* \*\s*$/gm, '')
     // Stage 7: Remove orphaned asterisks
     .replace(/^\*\s*\n/gm, '\n')
-    // Stage 8: Remove ALL remaining asterisks (they are formatting marks, not content)
-    .replace(/\*\*/g, '')
-    .replace(/\*/g, '');
+    // Stage 8: Bold Q&A markers before removing other asterisks
+    .replace(/^(שאלה:)/gm, '**שאלה:**')
+    .replace(/^(תשובה:)/gm, '**תשובה:**')
+    .replace(/^(ש:)/gm, '**ש:**')
+    .replace(/^(ת:)/gm, '**ת:**')
+    // Stage 9: Remove ALL remaining asterisks (they are formatting marks, not content)
+    .replace(/\*\*\*\*/g, '**')  // Fix quadruple asterisks to double
+    .replace(/\*\*\*([^*])/g, '**$1')  // Fix triple to double
+    .replace(/([^*])\*\*\*/g, '$1**')  // Fix triple to double
+    .replace(/([^*])\*([^*])/g, '$1$2');  // Remove single asterisks but keep ** (bold)
 
   return (
     <div className={`prose prose-lg max-w-none ${className}`}>
