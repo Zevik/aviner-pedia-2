@@ -13,7 +13,7 @@ async function getFrenchContent() {
   const { data, error } = await supabase
     .from('content_items')
     .select('*')
-    .or('title.ilike.%les cours%,title.ilike.%emouna%,title.ilike.%erets%,title.ilike.%paracha%,title.ilike.%couple%,original_tags.ilike.%Emouna%,original_tags.ilike.%Erets Israel%,original_tags.ilike.%La Paracha%,original_tags.ilike.%Le couple%')
+    .or('title.ilike.%français%,sub_category.ilike.%français%,sub_category.ilike.%Emouna%,sub_category.ilike.%Erets Israel%,sub_category.ilike.%Paracha%,sub_category.ilike.%couple%')
     .order('title');
 
   if (error) {
@@ -27,17 +27,21 @@ async function getFrenchContent() {
 export default async function FrenchPage() {
   const items = await getFrenchContent();
 
-  // Group by tags/categories
+  // Group by sub_category
   const grouped = items.reduce((acc, item) => {
-    const tags = item.original_tags?.split(',').map((t: string) => t.trim()) || [];
-    const frenchTag = tags.find((t: string) =>
-      t.match(/Emouna|Erets Israel|Paracha|Le couple/)
-    ) || 'Autres';
+    const subCat = item.sub_category || 'Autres';
 
-    if (!acc[frenchTag]) {
-      acc[frenchTag] = [];
+    // Match French categories
+    let category = 'Autres';
+    if (subCat.match(/Emouna|אמונה/i)) category = 'Emouna';
+    else if (subCat.match(/Erets Israel|ארץ ישראל/i)) category = 'Erets Israel';
+    else if (subCat.match(/Paracha|פרשת השבוע/i)) category = 'La Paracha de la semaine';
+    else if (subCat.match(/couple|famille|זוג|משפחה/i)) category = 'Le couple et la famille';
+
+    if (!acc[category]) {
+      acc[category] = [];
     }
-    acc[frenchTag].push(item);
+    acc[category].push(item);
     return acc;
   }, {} as Record<string, any[]>);
 
@@ -113,7 +117,7 @@ export default async function FrenchPage() {
                       {item.video_id && (
                         <div className="mt-3 inline-flex items-center text-sm text-primary">
                           <Video className="w-4 h-4 ml-2" />
-                          <span>סרטון</span>
+                          <span>Vidéo</span>
                         </div>
                       )}
                     </Link>
@@ -154,7 +158,7 @@ export default async function FrenchPage() {
             className="inline-flex items-center space-x-2 space-x-reverse text-primary hover:underline"
           >
             <span>←</span>
-            <span>חזרה לעמוד הבית</span>
+            <span>Retour à l'accueil</span>
           </Link>
         </div>
       </div>
