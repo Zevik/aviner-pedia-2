@@ -13,7 +13,7 @@ async function getFrenchContent() {
   const { data, error } = await supabase
     .from('content_items')
     .select('*')
-    .or('title.ilike.%Emouna%,title.ilike.%Erets%,title.ilike.%Paracha%,title.ilike.%couple%,title.ilike.%famille%,title.ilike.%Mitsva%,title.ilike.%état%,sub_category.ilike.%Emouna%,sub_category.ilike.%Erets%,sub_category.ilike.%Paracha%,sub_category.ilike.%couple%,sub_category.ilike.%famille%')
+    .or('title.ilike.%Emouna%,title.ilike.%Erets%,title.ilike.%Paracha%,title.ilike.%couple%,title.ilike.%famille%,title.ilike.%Mitsva%,title.ilike.%état%,title.ilike.%éthique%,title.ilike.%amour%,title.ilike.%obligation%,title.ilike.%opérations%,title.ilike.%Mashiah%,sub_category.ilike.%Emouna%,sub_category.ilike.%Erets%,sub_category.ilike.%Paracha%,sub_category.ilike.%couple%,sub_category.ilike.%famille%')
     .order('title');
 
   if (error) {
@@ -36,11 +36,11 @@ export default async function FrenchPage() {
     let category = 'Autres';
     if (title.match(/Emouna/i) || subCat.match(/אמונה/i)) {
       category = 'Emouna';
-    } else if (title.match(/Erets|Mitsva|état/i) || subCat.match(/ארץ ישראל/i)) {
+    } else if (title.match(/Erets|Mitsva|état|obligation|opérations|Mashiah/i) || subCat.match(/ארץ ישראל/i)) {
       category = 'Erets Israel';
     } else if (title.match(/Paracha/i) || subCat.match(/פרשת השבוע/i)) {
       category = 'La Paracha de la semaine';
-    } else if (title.match(/couple|famille/i) || subCat.match(/זוג|משפחה/i)) {
+    } else if (title.match(/couple|famille|éthique|amour/i) || subCat.match(/זוג|משפחה/i)) {
       category = 'Le couple et la famille';
     }
 
