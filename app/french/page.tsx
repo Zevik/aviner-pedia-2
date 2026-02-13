@@ -94,7 +94,7 @@ export default async function FrenchPage() {
                 </div>
 
                 <div className="grid gap-4 md:grid-cols-2">
-                  {categoryItems.map((item) => (
+                  {categoryItems.map((item: any) => (
                     <Link
                       key={item.id}
                       href={`/content/${item.id}`}
@@ -131,7 +131,7 @@ export default async function FrenchPage() {
               </h2>
 
               <div className="grid gap-4 md:grid-cols-2">
-                {grouped['Autres'].map((item) => (
+                {grouped['Autres'].map((item: any) => (
                   <Link
                     key={item.id}
                     href={`/content/${item.id}`}

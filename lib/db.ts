@@ -100,22 +100,22 @@ export async function getLatestVideos(limit: number = 12): Promise<ContentItem[]
 
 /**
  * Fetch series grouped by sub_category
+ * Returns the largest series by item count (not by date)
  */
 export async function getSeriesGroups(limit: number = 8) {
+  // Get ALL series to count them properly
   const { data, error } = await supabase
     .from('content_items')
-    .select('sub_category, title')
+    .select('sub_category, title, id')
     .eq('main_category', 'סדרות')
-    .not('sub_category', 'is', null)
-    .order('created_at', { ascending: false })
-    .limit(100);
+    .not('sub_category', 'is', null);
 
   if (error) {
     console.error('Error fetching series:', error);
     return [];
   }
 
-  // Group by sub_category
+  // Group by sub_category and count
   const grouped = data.reduce((acc, item) => {
     const key = item.sub_category!;
     if (!acc[key]) {
@@ -131,7 +131,10 @@ export async function getSeriesGroups(limit: number = 8) {
     return acc;
   }, {} as Record<string, any>);
 
-  return Object.values(grouped).slice(0, limit);
+  // Sort by count (largest series first) and return top N
+  return Object.values(grouped)
+    .sort((a: any, b: any) => b.count - a.count)
+    .slice(0, limit);
 }
 
 /**
