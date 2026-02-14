@@ -31,3 +31,12 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+# Temporary scripts and logs
+check*.js
+fix*.js
+find*.js
+*_error* 
+*_results.txt
+*.csv
+yaml*.txt
+yaml*.json
